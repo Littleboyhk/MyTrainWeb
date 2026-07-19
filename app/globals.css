@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/*  Theme tokens — light is the :root default, .dark overrides it.     */
+/*  We default the app to dark via next-themes (defaultTheme="dark").  */
+/* ------------------------------------------------------------------ */
+:root {
+  --bg: #f1f3f8;
+  --surface: #ffffff;
+  --elevated: #ffffff;
+  --text: #14161f;
+  --muted: #5a5f70;
+  --hairline: rgba(20, 22, 31, 0.1);
+
+  /* Liquid glass */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(20, 22, 31, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --glass-blur: 18px;
+
+  /* Ambient light blobs behind content */
+  --glow-indigo: rgba(91, 95, 239, 0.28);
+  --glow-violet: rgba(139, 95, 230, 0.26);
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b0c0f;
+  --surface: #151721;
+  --elevated: #1c1f2e;
+  --text: #f5f6fa;
+  --muted: #9aa0b4;
+  --hairline: rgba(255, 255, 255, 0.08);
+
+  --glass-bg: rgba(28, 31, 46, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.16);
+  --glass-blur: 20px;
+
+  --glow-indigo: rgba(91, 95, 239, 0.4);
+  --glow-violet: rgba(139, 95, 230, 0.38);
+
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--hairline);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(91, 95, 239, 0.35);
+    color: #fff;
+  }
+
+  /* Tabular figures for the data-forward numerals */
+  .nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+}
+
+@layer components {
+  /* Frosted translucent surface with a specular rim highlight on top edge */
+  .glass {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-highlight),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+      0 20px 60px -24px rgba(0, 0, 0, 0.55);
+  }
+
+  /* A brighter specular sweep along the top edge for premium cards */
+  .glass-rim::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      140deg,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0) 32%,
+      rgba(255, 255, 255, 0) 68%,
+      rgba(139, 95, 230, 0.35)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #5b5fef 0%, #8b5fe6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .gradient-text-animated {
+    background: linear-gradient(
+      110deg,
+      #5b5fef 0%,
+      #8b5fe6 40%,
+      #a78bfa 55%,
+      #8b5fe6 70%,
+      #5b5fef 100%
+    );
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-pan 8s ease infinite;
+  }
+
+  .btn-gradient {
+    background: linear-gradient(135deg, #5b5fef 0%, #8b5fe6 100%);
+    color: #fff;
+    box-shadow:
+      0 10px 30px -10px rgba(91, 95, 239, 0.7),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+    transition:
+      transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+  }
+
+  .btn-gradient:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow:
+      0 16px 40px -12px rgba(91, 95, 239, 0.8),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+  }
+
+  .btn-gradient:active {
+    transform: translateY(0);
+  }
+
+  /* Section-heading eyebrow pill */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+@layer utilities {
+  .text-muted {
+    color: var(--muted);
+  }
+
+  .bg-surface {
+    background-color: var(--surface);
+  }
+
+  .bg-elevated {
+    background-color: var(--elevated);
+  }
+
+  /* Subtle dotted grid used behind the hero */
+  .bg-grid {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      var(--hairline) 1px,
+      transparent 0
+    );
+    background-size: 44px 44px;
+  }
+
+  /* Ambient gradient glow blob */
+  .glow-blob {
+    background: radial-gradient(
+      circle at center,
+      var(--glow-indigo),
+      transparent 70%
+    );
+    filter: blur(40px);
+  }
+
+  .glow-blob-violet {
+    background: radial-gradient(
+      circle at center,
+      var(--glow-violet),
+      transparent 70%
+    );
+    filter: blur(40px);
+  }
+
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
